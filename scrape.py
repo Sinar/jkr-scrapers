@@ -16,7 +16,7 @@ with open(config_filename) as config_file:
 logging.getLogger().setLevel(logging.INFO)
 requests_cache.install_cache(config['project_name'])
 
-scraper = JKRTender(config['url'])
+scraper = JKRTender(config['url'], config['fields'])
 jsonl_file = open("{}.jsonl".format(config['project_name']), "w")
 
 for data in scraper.get_rows():
