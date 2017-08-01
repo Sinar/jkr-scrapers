@@ -77,7 +77,11 @@ class JKRTenderDetails:
         # Compile all strings in tables into a 2D list of table_index, string_index
         tables_strings = []
         for table in tables:
-            tds = table.find_all("td")
+            trs = table.find_all("tr", recursive=False)
+            tds_in_trs = [tr.find_all("td") for tr in trs]
+            tds = []
+            for tds_in_tr in tds_in_trs:
+                tds.extend(tds_in_tr)
             table_strings = [td.get_text(strip=True) for td in tds]
             tables_strings.append(table_strings)
 
