@@ -10,11 +10,13 @@ class JKRTender:
         self.page_offset = start_offset
         self.page_items = page_items
         self.details_fields = details_fields
+        self.session = requests.Session()
+        self.session.verify = "cabundle.pem"
 
     def get_rows(self):
         while True:
             logging.info("Processing offset {}...".format(self.page_offset))
-            page = JKRTenderPage(self.url, self.page_offset, self.details_fields)
+            page = JKRTenderPage(self.url, self.page_offset, self.details_fields, self.session)
             for row in page.get_rows():
                 yield row
             if page.is_last_page:
@@ -22,16 +24,17 @@ class JKRTender:
             self.page_offset += self.page_items
 
 class JKRTenderPage:
-    def __init__(self, base_url, offset, details_fields):
+    def __init__(self, base_url, offset, details_fields, session):
         self.base_url = base_url
         self.offset = offset
         self.details_fields = details_fields
+        self.session = session
         self._get_page()
         self._scrape_page()
 
     def _get_page(self):
         query = {'offset': self.offset}
-        response = requests.get(self.base_url, query, verify="cabundle.pem")
+        response = self.session.get(self.base_url, params=query)
         self.url = response.url
         self.html = response.text
 
@@ -50,13 +53,14 @@ class JKRTenderPage:
         for row in self._rows:
             href = row.find("a")['href']
             details_url = urljoin(self.url, href)
-            details = JKRTenderDetails(details_url, self.details_fields)
+            details = JKRTenderDetails(details_url, self.details_fields, self.session)
             yield details.data
 
 class JKRTenderDetails:
-    def __init__(self, url, fields):
+    def __init__(self, url, fields, session):
         self.url = url
         self.fields = fields
+        self.session = session
 
         url_parts = urlsplit(self.url)
         query = parse_qs(url_parts.query)
@@ -67,7 +71,7 @@ class JKRTenderDetails:
 
     def _get_page(self):
         logging.info("Processing project {}...".format(self.project_num))
-        response = requests.get(self.url, verify="cabundle.pem")
+        response = self.session.get(self.url)
         self.html = response.text
 
     def _scrape_page(self):
