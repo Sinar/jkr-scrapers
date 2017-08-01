@@ -1,0 +1,23 @@
+{
+    "project_name": "kenyataan_tender",
+    "source_agency": "jkr",
+    "url": "https://www.jkr.gov.my/ckub/b_admin/t_list.asp",
+    "fields": {
+        "title": [0, 2],
+        "site_visit": [0, 4],
+        "advertise_date": [0, 6],
+        "offering_office": [0, 8],
+        "contractor_grade": [0, 11],
+        "contractor_type": [0, 13],
+        "contractor_class": [0, 15],
+        "contractor_head": [0, 17],
+        "price": [0, 20],
+        "payment_on_behalf_of": [0, 22],
+        "sale_start": [0, 24],
+        "sale_end": [0, 26],
+        "sale_location": [0, 28],
+        "closing_date": [0, 30],
+        "closing_time": [0, 32],
+        "closing_location": [0, 34]
+    }
+}
