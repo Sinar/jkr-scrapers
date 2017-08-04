@@ -93,8 +93,12 @@ class JKRTenderDetails:
         data['id'] = self.project_num
 
         for key in self.fields:
-            position = self.fields[key]
-            data[key] = tables_strings[position[0]][position[1]]
+            try:
+                position = self.fields[key]
+                data[key] = tables_strings[position[0]][position[1]]
+            except IndexError:
+                logging.error("Error scraping field {}".format(key))
+                data[key] = "Scrape Error"
         data['source_url'] = self.url
         
         self.data = data
